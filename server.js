@@ -19,6 +19,10 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+//handle not resource not found errors
+app.use("*", (req, res) => {
+  res.status(404).json({ msg: "page not found" });
+});
 const port = process.env.PORT || 3000;
 
 //connect to database
