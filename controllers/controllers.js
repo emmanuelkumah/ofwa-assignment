@@ -9,3 +9,6 @@ export const getTotalGalamsaySites = async (req, res) => {
 
   res.json({ totalGalamsaySites });
 };
+export const getTotalSites = async (req, res) => {
+  res.json({ msg: "Show all sites" });
+};
