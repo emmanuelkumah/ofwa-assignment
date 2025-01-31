@@ -9,6 +9,7 @@ import {
   getCitiesWithSitesGreaterThanTen,
 } from "../controllers/galamsayControllers.js";
 
+//routes to access the controller
 router.route("/").get(getAllData);
 router.route("/average").get(getAverageSitePerRegion);
 router.route("/total-sites").get(getTotalGalamsaySites);
