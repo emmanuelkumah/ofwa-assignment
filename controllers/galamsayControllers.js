@@ -2,15 +2,21 @@ import { readCSV } from "../analyzeData.js";
 import GalamsaySiteModel from "../model/GalamsaySiteModel.js";
 
 export const getAllData = async (req, res) => {
+  // connect to the MongoDB database and retrieve all documents in the collection
   const galamsaySitesData = await GalamsaySiteModel.find({});
   res.json({ galamsaySitesData });
 };
 
 export const getTotalGalamsaySites = async (req, res) => {
   const galamsaySitesData = await GalamsaySiteModel.find({});
-  //   const data = await readCSV("galamsay_data.csv");
+
+  /*
+   * Iterate over the galamsaySitesData and get the total number of galamsay sites
+   * Convert the value of Number_of_Galamsay_Sites to a number
+   * Ignore the values that are not valid numbers
+   * Sum and return the total number of galamsay sites
+   */
   const totalGalamsaySites = galamsaySitesData.reduce((total, currValue) => {
-    //check if Number_of_galamsay_sites is a number'
     const numberOfGalamsaySites = Number(currValue.Number_of_Galamsay_Sites);
     if (!isNaN(numberOfGalamsaySites) && numberOfGalamsaySites > 0) {
       return total + numberOfGalamsaySites;
@@ -23,11 +29,11 @@ export const getTotalGalamsaySites = async (req, res) => {
   }, 0);
   res.json({ totalGalamsaySites });
 };
-export const getAverageSitePerRegion = async (req, res) => {
-  //   const data = await readCSV("galamsay_data.csv");
-  const galamsaySitesData = await GalamsaySiteModel.find({});
 
-  // Create an object to store regional totals and counts
+export const getAverageSitePerRegion = async (req, res) => {
+  const galamsaySitesData = await GalamsaySiteModel.find({});
+  //Calculate the average number of galamsay sites per region by dividing the totalSites by cityCount for each region
+
   const regionalStats = {};
 
   // Aggregate data by region
@@ -49,19 +55,19 @@ export const getAverageSitePerRegion = async (req, res) => {
   // Calculate averages and format results
   const averages = Object.entries(regionalStats).map(([region, stats]) => ({
     region,
-    average: (stats.totalSites / stats.cityCount).toFixed(2),
-    totalSites: stats.totalSites,
-    cityCount: stats.cityCount,
+    averageGalamsaySites: (stats.totalSites / stats.cityCount).toFixed(2),
   }));
 
   // Sort by average in descending order
-  const result = averages.sort((a, b) => b.average - a.average);
+  const result = averages.sort(
+    (a, b) => b.averageGalamsaySites - a.averageGalamsaySites
+  );
   res.json(result);
 };
 
 export const getRegionWithHighestGalamsaySites = async (req, res) => {
   const galamsaySitesData = await GalamsaySiteModel.find({});
-
+  // if  number of galamsay sites for the current region is greater than previous return the current region
   const regionHighestGalamsay = galamsaySitesData.reduce(
     (previousRegion, currentRegion) => {
       const numberOfGalamsaySites = Number(
@@ -80,12 +86,12 @@ export const getRegionWithHighestGalamsaySites = async (req, res) => {
   res.json(regionHighestGalamsay);
 };
 
-//cities with more than 10 galamsay sites
 export const getCitiesWithSitesGreaterThanTen = async (req, res) => {
   const galamsaySitesData = await GalamsaySiteModel.find({});
   const threshold = 10;
+  //filter galamsaySites with number of sites greater than 10
   const exceedsMin = galamsaySitesData.filter(
-    (site) => Number(site.Number_of_Galamsay_Sites) > threshold
+    (data) => Number(data.Number_of_Galamsay_Sites) > threshold
   );
   res.json(exceedsMin);
 };
