@@ -1,12 +1,15 @@
 import { readCSV } from "../analyzeData.js";
+import GalamsaySiteModel from "../model/GalamsaySiteModel.js";
 
 export const getAllData = async (req, res) => {
-  res.send("get all data");
+  const galamsaySitesData = await GalamsaySiteModel.find({});
+  res.json({ galamsaySitesData });
 };
 
 export const getTotalGalamsaySites = async (req, res) => {
-  const data = await readCSV("galamsay_data.csv");
-  const totalGalamsaySites = data.reduce((total, currValue) => {
+  const galamsaySitesData = await GalamsaySiteModel.find({});
+  //   const data = await readCSV("galamsay_data.csv");
+  const totalGalamsaySites = galamsaySitesData.reduce((total, currValue) => {
     //check if Number_of_galamsay_sites is a number'
     const numberOfGalamsaySites = Number(currValue.Number_of_Galamsay_Sites);
     if (!isNaN(numberOfGalamsaySites) && numberOfGalamsaySites > 0) {
@@ -21,12 +24,14 @@ export const getTotalGalamsaySites = async (req, res) => {
   res.json({ totalGalamsaySites });
 };
 export const getAverageSitePerRegion = async (req, res) => {
-  const data = await readCSV("galamsay_data.csv");
+  //   const data = await readCSV("galamsay_data.csv");
+  const galamsaySitesData = await GalamsaySiteModel.find({});
+
   // Create an object to store regional totals and counts
   const regionalStats = {};
 
   // Aggregate data by region
-  data.forEach((site) => {
+  galamsaySitesData.forEach((site) => {
     const region = site.Region;
     const sites = parseInt(site.Number_of_Galamsay_Sites);
 
@@ -55,9 +60,9 @@ export const getAverageSitePerRegion = async (req, res) => {
 };
 
 export const getRegionWithHighestGalamsaySites = async (req, res) => {
-  const data = await readCSV("galamsay_data.csv");
+  const galamsaySitesData = await GalamsaySiteModel.find({});
 
-  const regionHighestGalamsay = data.reduce(
+  const regionHighestGalamsay = galamsaySitesData.reduce(
     (previousRegion, currentRegion) => {
       const numberOfGalamsaySites = Number(
         currentRegion.Number_of_Galamsay_Sites
@@ -77,9 +82,9 @@ export const getRegionWithHighestGalamsaySites = async (req, res) => {
 
 //cities with more than 10 galamsay sites
 export const getCitiesWithSitesGreaterThanTen = async (req, res) => {
-  const data = await readCSV("galamsay_data.csv");
+  const galamsaySitesData = await GalamsaySiteModel.find({});
   const threshold = 10;
-  const exceedsMin = data.filter(
+  const exceedsMin = galamsaySitesData.filter(
     (site) => Number(site.Number_of_Galamsay_Sites) > threshold
   );
   res.json(exceedsMin);

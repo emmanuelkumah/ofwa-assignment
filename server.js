@@ -2,8 +2,11 @@ import express from "express";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import apiRouter from "./routes/apiRouter.js";
+import { readCSV } from "./analyzeData.js";
+import GalamsaySiteModel from "./model/GalamsaySiteModel.js";
 import * as dotenv from "dotenv";
 dotenv.config();
+
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
@@ -24,6 +27,9 @@ try {
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
+  //insert read data to database
+  //   const data = await readCSV("galamsay_data.csv");
+  //   const result = await GalamsaySiteModel.insertMany(data);
 } catch (error) {
   console.log(error);
   process.exit(1);
