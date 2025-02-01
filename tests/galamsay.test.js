@@ -44,10 +44,10 @@ describe("GET /api/galamsay/average", () => {
   });
 });
 
-describe("GET /api/galamsay/average", () => {
+describe("GET /api/galamsay/sites-exceeds-threshold", () => {
   it("should return region with galamsay sites exceeding 10", async () => {
     const response = await request(app).get(
-      "/api/v1/galamsay//sites-exceeds-threshold"
+      "/api/v1/galamsay/sites-exceeds-threshold"
     );
     expect(response.status).toBe(200);
   });
